@@ -33,5 +33,6 @@ To deploy this project, configure the .env file, and angular environment files (
 - Submit and display bookmarks with metadata.
 - Tag bookmarks for easier categorization.
 - Search for bookmarks.
+- Inline edit of bookmarks (description, title).
 - OAuth authentication using Auth0 and Spring Boot as an OAuth Resource Server.
 - Nginx used to serve Angular application and act as a reverse proxy for backend API calls.
