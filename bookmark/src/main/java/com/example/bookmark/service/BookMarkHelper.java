@@ -48,11 +48,12 @@ public class BookMarkHelper {
             logger.info("BookMark instantiated. Title: {}, Description: {}", title, description);
             return bookMark;
         }catch(HttpStatusException e) {
-            logger.warn("Site blocked access! Creating default bookmark");
+            logger.warn("Site ({}) blocked access! Creating default bookmark", uri);
             BookMark bookMark = new BookMark();
             bookMark.setUrl(uri.toString());
             bookMark.setTitle(uri.getHost());
             bookMark.setDescription("Set Description!");
+            bookMark.setFaviconUrl(getFaviconUrl(uri.toString()));
             return bookMark;
         }
         catch (IOException e) {
