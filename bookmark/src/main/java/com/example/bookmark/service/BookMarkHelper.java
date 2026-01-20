@@ -2,6 +2,7 @@ package com.example.bookmark.service;
 
 import com.example.bookmark.entity.BookMark;
 import com.example.bookmark.exceptions.BookMarkCreationException;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,7 +33,10 @@ public class BookMarkHelper {
             logger.info("URI created: {}", uri);
         }
         try {
-            Document document = Jsoup.connect(uri.toString()).userAgent("Mozilla").timeout(5000).get();
+            Document document = Jsoup.connect(uri.toString()).userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:119.0) Gecko/20100101 Firefox/119.0")
+                    .timeout(5000)
+                    .referrer("https://www.google.com")
+                    .get();
             String title = getTitle(document);
             String description = getDescription(document);
             String faviconUrl = getFaviconUrl(uri.toString());
@@ -43,11 +47,19 @@ public class BookMarkHelper {
             bookMark.setFaviconUrl(faviconUrl);
             logger.info("BookMark instantiated. Title: {}, Description: {}", title, description);
             return bookMark;
-        } catch (IOException e) {
-            logger.warn("I/O Error {}", e.getMessage());
+        }catch(HttpStatusException e) {
+            logger.warn("Site blocked access! Creating default bookmark");
+            BookMark bookMark = new BookMark();
+            bookMark.setUrl(uri.toString());
+            bookMark.setTitle(uri.getHost());
+            bookMark.setDescription("Set Description!");
+            return bookMark;
+        }
+        catch (IOException e) {
+            logger.warn("I/O Error {}, falling back!", e.getMessage());
             throw new BookMarkCreationException("Failure during document parsing!");
         } catch (Exception e) {
-            logger.warn("Non I/O Error {}", e.getMessage());
+            logger.warn("Non I/O Error {}, falling back!", e.getMessage());
             throw new BookMarkCreationException("Failure during document creation!");
         }
     }
