@@ -1,0 +1,35 @@
+@if(urlIssue) {
+  <div style="color: red;">Unexpected error, please try again!</div>
+}
+<form class="max-w-sm mx-auto space-y-4" [formGroup]="bookmarkForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="url" class="block mb-2.5 text-sm font-medium text-heading">Url</label>
+    <input formControlName="url" type="text" id="url" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-2.5 py-2 shadow-xs placeholder:text-body" placeholder="" required />
+    @if(url && (url.hasError('required') && url.touched)) {
+      <div style="color: red;"> Url is required.</div>
+    }
+    @if(url && (url.hasError('isValidUrl') && url.touched)) {
+      <div style="color: red;"> Please enter a valid url.</div>
+    }
+  </div>
+  <div>
+    <div>
+      <label class="block mb-2.5 text-sm font-medium text-heading">Tags</label>
+      <div class="space-y-2">
+        @for (tag of tags; track tag.id) {
+          <label class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              [checked]="isTagSelected(tag.id)"
+              (change)="onTagToggle(tag.id, $event)"
+              class="w-4 h-4 rounded"
+            />
+            <span>{{ tag.name }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+  </div>
+  <button class="text-black bg-dark box-border border border-transparent hover:bg-dark-strong focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" type="submit">Create Bookmark</button>
+</form>

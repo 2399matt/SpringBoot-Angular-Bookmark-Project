@@ -1,0 +1,72 @@
+<div class="space-y-6">
+  <input [formControl]="searchTerm" type="text" placeholder="Search...">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @for (bookmark of bookmarks; track bookmark.id;) {
+      <div class="bg-white border border-slate-200 rounded-sm p-5 hover:shadow-sm transition-shadow cursor-pointer">
+        <a routerLink="/bookmarks/{{bookmark.id}}">
+        <div class="flex items-start gap-3 mb-3">
+          <img
+            [src]="bookmark.faviconUrl"
+            (load)="onFaviconLoad($event)"
+            [alt]="bookmark.title + ' favicon'"
+            class="w-8 h-8 rounded flex-shrink-0"
+          />
+          <h3 class="font-semibold text-slate-800 text-lg line-clamp-2 flex-1">
+            {{ bookmark.title }}
+          </h3>
+        </div>
+        </a>
+        <p class="text-slate-600 text-sm mb-4 line-clamp-3">
+          {{ bookmark.description.substring(0, 100) + '.....' }}
+        </p>
+
+        <a (click)="updateViews(bookmark.id)"
+          [href]="bookmark.url"
+          target="_blank"
+          class="text-blue-600 hover:text-blue-800 text-sm truncate block mb-3">
+          {{ bookmark.url }}
+        </a>
+
+        <div class="flex flex-wrap gap-2 mb-3">
+          @for (tag of bookmark.tags; track tag.id) {
+            <span class="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-full">
+              {{ tag.name }}
+            </span>
+          }
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
+          <span>{{ bookmark.createdAt | date:'MMM d, y' }}</span>
+          <span>{{ bookmark.views }} views</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (bookmarks.length === 0) {
+    <div class="text-center py-12">
+      <p class="text-slate-500 text-lg">No bookmarks found</p>
+      <p class="text-slate-400 text-sm mt-2">Try adjusting your filters or add a new bookmark</p>
+    </div>
+  }
+
+  <div class="flex items-center justify-center gap-2 mt-6">
+    <button
+      (click)="goToPage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded disabled:opacity-50 disabled:cursor-not-allowed transition">
+      Previous
+    </button>
+
+    <span class="text-slate-700">
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
+
+    <button
+      (click)="goToPage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded disabled:opacity-50 disabled:cursor-not-allowed transition">
+      Next
+    </button>
+  </div>
+</div>

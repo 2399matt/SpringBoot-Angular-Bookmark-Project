@@ -1,0 +1,4 @@
+OAUTH_ISSUER= Auth issuer uri
+OAUTH_AUD= Auth audience
+DB_URL= jdbc connection url
+DB_CRED= db login credentials
